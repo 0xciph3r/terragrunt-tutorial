@@ -1,0 +1,15 @@
+.DS_Store
+**/.DS_Store
+
+# Terragrunt/Terraform local artifacts
+**/.terragrunt-cache/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Local variable files and secrets
+*.tfvars
+*.auto.tfvars
+*.tfvars.json
+*.auto.tfvars.json
