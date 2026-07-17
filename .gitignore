@@ -13,3 +13,5 @@ crash.log
 *.auto.tfvars
 *.tfvars.json
 *.auto.tfvars.json
+
+provider/dns-provider-lab
