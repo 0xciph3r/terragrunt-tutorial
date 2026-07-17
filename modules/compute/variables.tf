@@ -28,6 +28,11 @@ variable "ami_id" {
 variable "allowed_ssh_cidr" {
   description = "The CIDR block that is allowed to access the instance via SSH."
   type        = string
+
+  validation {
+    condition     = can(cidrhost(var.allowed_ssh_cidr, 0))
+    error_message = "allowed_ssh_cidr must be a valid CIDR block."
+  }
 }
 
 variable "subnet_id" {
@@ -50,4 +55,9 @@ variable "acm_certificate_arn" {
   description = "The ARN of the ACM certificate to use for the HTTPS listener"
   type        = string
   default     = ""
+
+  validation {
+    condition     = var.enable_https ? length(trimspace(var.acm_certificate_arn)) > 0 : true
+    error_message = "acm_certificate_arn must be set when enable_https is true."
+  }
 }

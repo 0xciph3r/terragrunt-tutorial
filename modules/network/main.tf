@@ -10,6 +10,18 @@ resource "aws_vpc" "main" {
   }
 }
 
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+  ingress = []
+  egress  = []
+
+  tags = {
+    Name        = "${var.environment}-default-sg"
+    Environment = var.environment
+    Tier        = "network"
+  }
+}
+
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 

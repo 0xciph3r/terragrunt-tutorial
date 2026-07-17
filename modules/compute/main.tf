@@ -38,13 +38,21 @@ resource "aws_instance" "app" {
     instance_type = var.instance_type
     subnet_id     = var.subnet_id
     vpc_security_group_ids = [aws_security_group.app.id]
+    disable_api_termination = true
 
     metadata_options {
-      http_tokens = "required"
+      http_endpoint               = "enabled"
+      http_tokens                 = "required"
+      http_put_response_hop_limit = 1
+      instance_metadata_tags      = "disabled"
     }
+
     root_block_device {
-        encrypted   = true
+        encrypted             = true
+        delete_on_termination = true
+        volume_type           = "gp3"
     }
+
     associate_public_ip_address = false
 
     tags = {
@@ -60,9 +68,15 @@ resource "aws_security_group" "alb_ingress" {
     vpc_id           = var.vpc_id
 
     ingress {
-        
         from_port   = 80
         to_port     = 80
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        from_port   = 443
+        to_port     = 443
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
@@ -122,7 +136,8 @@ resource "aws_lb_target_group" "app_tg" {
     }
 }
 
-resource "aws_lb_listener" "app_listener" {
+resource "aws_lb_listener" "app_http_forward" {
+    count             = var.enable_https ? 0 : 1
     load_balancer_arn = aws_lb.app_alb.arn
     port              = 80
     protocol          = "HTTP"
@@ -132,16 +147,22 @@ resource "aws_lb_listener" "app_listener" {
         target_group_arn = aws_lb_target_group.app_tg.arn
     }
 
-      /* TODO: PRODUCTION REDIRECT ACTION (Uncomment when enable_https = true)
-  default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+}
+
+resource "aws_lb_listener" "app_http_redirect" {
+    count             = var.enable_https ? 1 : 0
+    load_balancer_arn = aws_lb.app_alb.arn
+    port              = 80
+    protocol          = "HTTP"
+
+    default_action {
+      type = "redirect"
+      redirect {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
     }
-  }
-  */
 }
 
 resource "aws_lb_target_group_attachment" "app_tg_attachment" {

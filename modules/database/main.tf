@@ -43,6 +43,11 @@ resource "aws_db_instance" "database_instance" {
   instance_class          = var.instance_class
   username                = var.db_username
   password                = var.db_password
+   backup_retention_period = 7
+   backup_window           = "03:00-04:00"
+   maintenance_window      = "sun:04:00-sun:05:00"
+   auto_minor_version_upgrade = true
+   copy_tags_to_snapshot   = true
   publicly_accessible     = false
   storage_encrypted        = true
   deletion_protection = true

@@ -42,6 +42,12 @@ resource "aws_elasticache_replication_group" "cache_replication_group" {
     engine_version = var.engine_version
     node_type = var.node_type
     num_cache_clusters = 1
+    auto_minor_version_upgrade   = true
+    automatic_failover_enabled   = false
+    multi_az_enabled             = false
+    maintenance_window           = "sun:05:00-sun:06:00"
+    snapshot_window              = "03:00-04:00"
+    snapshot_retention_limit     = 7
     at_rest_encryption_enabled = true
     transit_encryption_enabled = true
     subnet_group_name             = aws_elasticache_subnet_group.cache_subnet_group.name
