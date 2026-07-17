@@ -1,4 +1,4 @@
-include {
+include "root" {
     path = find_in_parent_folders("root.hcl")
 }
 
@@ -18,4 +18,3 @@ inputs = {
     app_subnet_cidrs    = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
     data_subnet_cidrs   = ["10.0.8.0/24", "10.0.9.0/24", "10.0.10.0/24"]
 }
-
