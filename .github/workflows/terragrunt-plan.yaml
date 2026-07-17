@@ -27,6 +27,11 @@ jobs:
           chmod +x terragrunt
           sudo mv terragrunt /usr/local/bin/terragrunt
           terragrunt --version
-      - name: Terragrunt run-all Plan
+
+      - name: Terragrunt HCL validation
+        working-directory: live/dev/us-east-1
+        run: terragrunt hcl validate
+
+      - name: Terragrunt run-all validate
         working-directory: live/dev/us-east-1/
-        run: terragrunt run --all plan --non-interactive
+        run: terragrunt run --all validate --non-interactive
