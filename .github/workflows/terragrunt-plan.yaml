@@ -1,4 +1,4 @@
-name: Terragrunt Plan
+name: Terragrunt Validate
 
 on:
   push:
